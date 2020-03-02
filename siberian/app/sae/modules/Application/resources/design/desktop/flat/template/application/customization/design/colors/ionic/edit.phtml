@@ -1,0 +1,650 @@
+<?php
+
+$blocks = $this->getApplication()->getBlocks();
+$tabbarBlock = $this->getApplication()->getBlock('tabbar'); 
+
+?>
+
+<link rel="stylesheet"
+      href="/app/sae/design/desktop/flat/js/codemirror/lib/codemirror.css">
+<link rel="stylesheet"
+      href="/app/sae/design/desktop/flat/js/codemirror/addon/hint/show-hint.css">
+<link rel="stylesheet"
+      href="/app/sae/design/desktop/flat/js/codemirror/addon/colorpicker/colorpicker.css">
+<script defer
+        src="/app/sae/design/desktop/flat/js/codemirror/lib/codemirror.js"></script>
+<script defer
+        src="/app/sae/design/desktop/flat/js/codemirror/mode/css/css.js"></script>
+<script defer
+        src="/app/sae/design/desktop/flat/js/codemirror/addon/edit/matchbrackets.js"></script>
+<script defer
+        src="/app/sae/design/desktop/flat/js/codemirror/addon/edit/closebrackets.js"></script>
+<script defer
+        src="/app/sae/design/desktop/flat/js/codemirror/addon/hint/show-hint.js"></script>
+<script defer
+        src="/app/sae/design/desktop/flat/js/codemirror/addon/hint/css-hint.js"></script>
+<script defer
+        src="/app/sae/design/desktop/flat/js/codemirror/addon/colorpicker/colorview.js"></script>
+<script defer
+        src="/app/sae/design/desktop/flat/js/codemirror/addon/colorpicker/colorpicker.js"></script>
+
+<link rel="stylesheet"
+      href="/app/sae/design/desktop/flat/js/minicolor/jquery.minicolors.css">
+<script defer
+        src="/app/sae/design/desktop/flat/js/minicolor/jquery.minicolors.js"></script>
+
+<script defer
+        src="/app/sae/design/desktop/flat/js/color-solver.js"></script>
+
+
+<div class="page-content-wrapper">
+    <form id="colorsForm"
+          action="<?php echo $this->getUrl('application/customization_design_colors/save'); ?>"
+          method="post">
+        <div id="colors">
+            <div id="colors_content">
+
+                <!-- START COLORS -->
+                <div id="app_colors">
+
+                    <div class="col-md-3 col-xs-4">
+                        <h4 class="title-editor border-yellow text-center">
+                            <?php echo p__("application", "Sections"); ?>
+                        </h4>
+                        <ul class="color-sections content-color">
+                            <li class="open-section"
+                                data-rel="all">
+                                <?php echo p__("application", "All"); ?>
+                            </li>
+                            <?php foreach ($blocks as $block): ?>
+                            <li class="open-section"
+                                data-rel="<?php echo $block->getCode(); ?>">
+                                <?php echo $block->getName(); ?>
+                            </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+
+                    <div class="col-md-9 col-xs-8">
+                        <?php foreach ($blocks as $block): ?>
+                        <?php $block_id = (strlen(dechex($block->getId())) == 2) ? dechex($block->getId()) : "0" . dechex($block->getId()); ?>
+                        <div id="sb-tour-color-section-<?php echo $block->getData("name"); ?>"
+                             class="color-section change-overview-content content-colors sb-tour"
+                             data-rel="<?php echo $block->getCode(); ?>"
+                             data-name="<?php echo $block->getName(); ?>">
+
+                            <?php
+                            $hasChildrens = false;
+                            if ($block->getChildren()) {
+                                $hasChildrens = true;
+                            }
+                            $children = $block->getChildren() ? $block->getChildren() : [$block];
+                            ?>
+
+                            <h4 class="title-editor border-yellow text-center">
+                                <?php echo $block->getName(); ?>
+                            </h4>
+
+                            <?php foreach ($children as $child) : ?>
+                                <?php $child_id = (strlen(dechex($child->getId())) == 2) ? dechex($child->getId()) : "0" . dechex($child->getId()); ?>
+                                <?php $child_id = $hasChildrens ? $child_id : "00"; ?>
+                                <?php if ($child->getParentId()) : ?>
+
+                                <?php endif; ?>
+
+
+                                <?php
+                                    $count = 0;
+                                    if ($child->getColorVariableName()) {
+                                        $count++;
+                                    }
+                                    if ($child->getBackgroundColorVariableName()) {
+                                        $count++;
+                                    }
+                                    if ($child->getBorderColorVariableName()) {
+                                        $count++;
+                                    }
+                                    if ($child->getImageColorVariableName()) {
+                                        $count++;
+                                    }
+
+                                    if ($count <= 0) {
+                                        continue;
+                                    }
+                                ?>
+
+                                <div class="subcontent content-color container-fluid custom-padding">
+
+                                    <?php if ($hasChildrens): ?>
+                                    <h6>
+                                        <?php echo $child->getName() ?>
+                                    </h6>
+                                    <?php endif; ?>
+
+                                    <div class="row block-group"
+                                         id="row_<?php echo $child->getId(); ?>">
+                                        <?php if ($child->getColorVariableName()) : ?>
+                                            <?php $hex = "#" . $block_id . $child_id . "01"; ?>
+                                            <div class="mini-color col-md-4 col-xs-6">
+                                                <input type="hidden"
+                                                       rel="color"
+                                                       data-blockid="<?php echo $child->getId(); ?>"
+                                                       data-index="<?php echo $hex; ?>"
+                                                       data-variable="<?php echo $child->getColorVariableName() ?>"
+                                                       id="<?php echo str_replace("$", "", $child->getColorVariableName()) ?>"
+                                                       class="mini-box color-picker"
+                                                       value="<?php echo $child->getColorRGBA(); ?>" />
+                                                <span class="mini-text"><?php echo p__("application", "Text") ?></span>
+                                            </div>
+                                        <?php endif; ?>
+
+                                        <?php if ($child->getBackgroundColorVariableName()) : ?>
+                                            <?php $hex = "#" . $block_id . $child_id . "02"; ?>
+                                            <div class="mini-color col-md-4 col-xs-6">
+                                                <input type="hidden"
+                                                       rel="background_color"
+                                                       data-blockid="<?php echo $child->getId(); ?>"
+                                                       data-index="<?php echo $hex; ?>"
+                                                       data-variable="<?php echo $child->getBackgroundColorVariableName() ?>"
+                                                       id="<?php echo str_replace("$", "", $child->getBackgroundColorVariableName()) ?>"
+                                                       class="mini-box color-picker"
+                                                       value="<?php echo $child->getBackgroundColorRGBA(); ?>" />
+                                                <span class="mini-text"><?php echo p__("application", "Background") ?></span>
+                                            </div>
+                                        <?php endif; ?>
+
+                                        <?php if ($child->getBorderColorVariableName()) : ?>
+                                            <?php $hex = "#" . $block_id . $child_id . "03"; ?>
+                                            <div class="mini-color col-md-4 col-xs-6">
+                                                <input type="hidden"
+                                                       rel="border_color"
+                                                       data-blockid="<?php echo $child->getId(); ?>"
+                                                       data-index="<?php echo $hex; ?>"
+                                                       data-variable="<?php echo $child->getBorderColorVariableName() ?>"
+                                                       id="<?php echo str_replace("$", "", $child->getBorderColorVariableName()) ?>"
+                                                       class="mini-box color-picker"
+                                                       value="<?php echo $child->getBorderColorRGBA(); ?>" />
+                                                <span class="mini-text"><?php echo p__("application", "Border") ?></span>
+                                            </div>
+                                        <?php endif; ?>
+
+                                        <?php if ($child->getImageColorVariableName()) : ?>
+                                            <?php $hex = "#" . $block_id . $child_id . "04"; ?>
+                                            <div class="mini-color col-md-4 col-xs-6">
+                                                <input type="hidden"
+                                                       rel="image_color"
+                                                       data-blockid="<?php echo $child->getId(); ?>"
+                                                       data-index="<?php echo $hex; ?>"
+                                                       data-variable="<?php echo $child->getImageColorVariableName() ?>"
+                                                       id="<?php echo str_replace("$", "", $child->getImageColorVariableName()) ?>"
+                                                       class="mini-box color-picker"
+                                                       value="<?php echo $child->getImageColorRGBA(); ?>" />
+                                                <span class="mini-text"><?php echo p__("application", "Image") ?></span>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <!-- END COLORS -->
+
+
+                <div id="sb-tour-custom-css-section"
+                     class="change-overview-content content-colors sb-tour col-xs-12">
+                    <h3 class="title-editor border-yellow text-center">
+                        <?php echo __("Advanced Customization CSS / SCSS"); ?>
+                        <div class="css-toggle sb-tour"
+                             id="toggle-scss">
+                            <input class="sb-tgl sb-tgl-flip toggle"
+                                   id="cb_on_off"
+                                   type="checkbox"
+                                   value="0"
+                                   class="color-blue checkbox"/>
+                            <label class="sb-tgl-btn"
+                                   for="cb_on_off"
+                                   data-tg-off="<?php echo __js('Show') ?>"
+                                   data-tg-on="<?php echo __js('Hide') ?>"></label>
+                        </div>
+                    </h3>
+
+                    <?php $custom_scss = $this->getApplication()->getCustomScss(); ?>
+                    <div id="row_scss"
+                         class="subcontent content-color container-fluid"
+                         style="display: none;">
+                        <h4>
+                            <?php echo __("Available SCSS Variables corresponding to previously set colors"); ?>
+                        </h4>
+                        <div class="row">
+                            <?php $variables = Template_Model_Design::getVariables($this->getApplication()); ?>
+                            <?php foreach ($variables as $name => $value): ?>
+                                <div class="mini-color col-md-4 col-xs-6">
+                                    <div class="mini-box content-options"
+                                         id="<?php echo str_replace("$", "", $name) ?>"
+                                         style="background-color: <?php echo $value; ?>">
+                                    </div>
+                                    <span><?php echo $name ?></span>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                        <div class="sb-cb"></div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label style="margin-top: 24px;">
+                                    <?php echo __("Input your SCSS here, save to validate & preview") ?>
+                                    <br/>
+                                    <br/>
+                                    <span class="keyb">Ctrl</span>
+                                    <b>+</b>
+                                    <span class="keyb">Space</span>
+                                    <b>=</b>
+                                    <?php echo __('Autocomplete & Suggestions ...') ?>
+                                    <br/>
+                                    <br/>
+                                </label>
+                                <textarea name="custom_scss"
+                                          id="custom_scss"
+                                          maxlength="16777215"
+                                          cols=""
+                                          rows="20"
+                                          class="input-flat"><?php echo $this->getApplication()->getCustomScss() ?></textarea>
+                            </div>
+                            <div class="sb-cb"></div>
+                        </div>
+                        <div class="col-sm-2 col-sm-offset-10">
+                            <button class="btn color-yellow pull-right"
+                                    id="save_scss"><?php echo __("Save") ?></button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </form>
+
+
+    <script type="text/javascript">
+
+        // Var overview!
+        var fakeContent = false;
+
+        // First replace link with scss!
+        let emptyCustomScss = "";
+        let template_css = "<?php echo addslashes(str_replace("\n", "", Template_Model_Design::generateCss($this->getApplication(), true, false, true))); ?>";
+        let template = template_css;
+        let scroller;
+
+        var imageRbgColor = null;
+        var statusBarTextColor = null;
+
+        let mobileOverview = $("#mobile_overview");
+
+        let reloadMobileOverview = function () {
+            mobileOverview = $("#mobile_overview");
+        };
+
+        // Save color changes!
+        let updateColor = function (input, value, opacity) {
+            let inputs = $("input[data-blockid='"+input.attr("data-blockid")+"']");
+            let colors = {};
+            inputs.each(function (index, item) {
+                let $this = $(item);
+                colors[$this.attr("rel")] = $this.val();
+            });
+
+            $.ajax({
+                url: '/application/customization_design_colors/save-color',
+                method: 'POST',
+                data: {
+                    block_id: input.attr("data-blockid"),
+                    colors: colors
+                },
+                dataType: 'json',
+                success: function (data) {
+                    //form_su
+                },
+                error: function (response) {}
+            });
+        };
+
+        /** Then bind for onChange */
+        let processed = false;
+        let processing = false;
+        let triggerChange = function () {
+            if (processing) {
+                return;
+            }
+            processing = true;
+
+            try {
+                let template = template_css;
+
+                // Immediately apply colors!
+                var dataIndex = document.querySelectorAll("input[type=hidden][data-index]");
+                for (var i = 0; i < dataIndex.length; i++) {
+                    let el = $(dataIndex[i]),
+                        index = el.attr("data-index"),
+                        rgba = el.val();
+
+                    template = template.replace(new RegExp(index, "g"), rgba);
+
+                    // Colorize mini-color!
+                    let miniId = "#" + el.data("variable").replace("$", "");
+                    $(miniId).css("background-color", rgba);
+
+                    // Transparent color!
+                    let rgbaToReplace = /rgba\(12, 0, 2, 0\.2\)/gmi
+
+                    // Specific case for homepage layouts!
+                    if (el.attr("id") == "homepage_bg_receiver") {
+                        template = template.replace(rgbaToReplace, rgba);
+                    }
+
+                    // Special case images.
+                    if ("$homepage-custom-image" == el.data("variable")) {
+                        imageRbgColor = rgba.replace(/[^0-9\.,]/gmi, "").split(",");
+                    }
+
+                    // Special case phone status bar
+                    if ("$bar-custom-bg" == el.data("variable")) {
+                        statusBarTextColor = rgba.replace(/[^0-9\.,]/gmi, "").split(",");
+                    }
+                }
+
+                // Okay weird!
+                let color = new SbColor(imageRbgColor[0], imageRbgColor[1], imageRbgColor[2]);
+                var solver = new SbColorSolver(color);
+                let result = solver.solve();
+
+                // result.filter apply to sb-tabbar images.
+                var imgfilter = "[data-colorize=\"true\"] img { " + result.filter + " }";
+
+                // Status bar!
+                $("#phone-bar").css("color", textStyleFromHex(statusBarTextColor));
+
+                reloadMobileOverview();
+                let overviewContents = mobileOverview.contents();
+
+                // Remove old SCSS, adds new!
+                overviewContents.find("#scss_live").remove();
+                let link = overviewContents.find("style").last();
+                link.after("<style id=\"scss_live\" type=\"text/css\">" + template + emptyCustomScss + imgfilter + "</style>");
+                overviewContents.find("#scss_live").text(template + emptyCustomScss + imgfilter);
+
+                processing = false;
+            } catch(e) {
+                processing = false;
+            }
+        };
+
+        function refreshCss() {
+            triggerChange(false);
+        }
+
+        $(document).ready(function () {
+            let saveScss = $("#save_scss");
+            saveScss.off("click");
+            saveScss.on("click", function (e) {
+                e.preventDefault();
+
+                var scss_value = $("#custom_scss").next(".CodeMirror").get(0).CodeMirror.getValue();
+                $("#custom_scss").val(scss_value);
+
+                $.ajax({
+                    url: '/application/customization_design_colors/save-custom',
+                    method: 'POST',
+                    data: {
+                        custom_scss: scss_value
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        emptyCustomScss = scss_value;
+                        feature_form_success(data.message);
+                        refreshCss();
+                    },
+                    error: function (response) {
+                        emptyCustomScss = "";
+                        feature_form_error(JSON.parse(response.responseText).message);
+                    }
+                });
+
+                return false;
+            });
+
+            $.minicolors.defaults.changeDelay = 200;
+            $.minicolors.defaults.format = "rgb";
+            $.minicolors.defaults.opacity = true;
+            $.minicolors.defaults.displayValue = true;
+
+            $(".color-picker").each(function () {
+                let input = $(this);
+                input.minicolors({
+                    change: function(value, opacity) {
+                        triggerChange();
+                        updateColor(input, value, opacity);
+                    }
+                });
+            });
+
+            /** Defaults to zero if no localStorage */
+            let toggle = 0;
+            if (typeof localStorage != "undefined") {
+                toggle = localStorage.getItem("show-scss");
+                if (toggle == null) {
+                    toggle = 0;
+                }
+            } else if (typeof sessionStorage != "undefined") {
+                toggle = sessionStorage.getItem("show-scss");
+                if (toggle == null) {
+                    toggle = 0;
+                }
+            }
+
+            $("#cb_on_off").on("click", function () {
+                let el = $("#cb_on_off");
+                let new_val = el.is(":checked") ? 1 : 0;
+                if (typeof localStorage != "undefined") {
+                    toggle = localStorage.setItem("show-scss", new_val);
+                } else if (typeof sessionStorage != "undefined") {
+                    toggle = sessionStorage.setItem("show-scss", new_val);
+                } else {
+                    toggle = new_val;
+                }
+                if (new_val == 1) {
+                    $("#row_scss").show();
+                } else {
+                    $("#row_scss").hide();
+                }
+            });
+
+            if (toggle == 1) {
+                $("#cb_on_off").click();
+            }
+
+
+            let textarea = document.getElementById("custom_scss");
+            let editor = CodeMirror.fromTextArea(textarea, {
+                matchBrackets: true,
+                autofocus: false,
+                mode: "text/x-scss",
+                lineNumbers: true,
+                colorpicker: true,
+                extraKeys: {
+                    "Ctrl-Space": "autocomplete"
+                }
+            });
+
+            setTimeout(function () {
+                editor.refresh();
+            }, 1000);
+
+
+            /**
+             * Sections toggler
+             */
+            let sectionLis = $(".color-sections li");
+            sectionLis.off("click");
+            sectionLis.on("click", function () {
+                let current = $(this);
+                let rel = current.attr("data-rel");
+                let section = $(".color-section[data-rel='"+rel+"']");
+                $(".color-section").hide();
+                section.show();
+                sectionLis.removeClass("color-yellow");
+                current.addClass("color-yellow");
+
+                // Show all!
+                if (rel === "all") {
+                    $(".color-section").show();
+                } else {
+                    if (fakeContent) {
+                        let el = $(this);
+                        let rel = el.attr("data-rel");
+                        let name = el.text().trim();
+                        iframe.f.displayElement(rel, name);
+                    }
+                }
+            });
+
+            // Triggers the `all` section to open!
+            $($(".color-sections li").get(0)).trigger("click");
+
+            if (!$('#cb_on_off').is(':checked') && $('#custom_scss').val().trim() !== '') {
+                $('#cb_on_off').trigger('click');
+            }
+        });
+
+
+    </script>
+    <style>
+        .mini-color {
+            margin-bottom: 6px;
+        }
+
+        div.mini-box {
+            width: 22px;
+            height: 22px;
+            float: left;
+            margin-right: 10px;
+            border: 1px solid #303030;
+            border-radius: 2px;
+        }
+
+        .css-toggle {
+            margin-top: 0;
+            float: right;
+            margin-right: 10px;
+            font-size: 14px;
+            width: 100px;
+        }
+
+        .content-colors .custom-padding {
+            padding-top: 15px;
+            padding-bottom: 10px;
+        }
+
+        .custom-padding h6 {
+            margin-top: -5px;
+        }
+
+        h6 {
+            font-size: 12px;
+            text-align: left;
+            text-transform: uppercase !important;
+            border-bottom: 1px solid lightgrey;
+            background-color: #f0f0f0;
+            padding: 5px;
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+
+        .CodeMirror {
+            font-size: 12px;
+            background-color: #f3f3f3 !important;
+            border-color: #b2b1b1 !important;
+            border-bottom: 2px solid;
+            margin-bottom: 15px;
+        }
+
+        .keyb {
+            border: 1px solid grey;
+            border-radius: 2px;
+            background-color: white;
+            font-family: monospace;
+            font-size: 12px;
+            padding: 3px 5px;
+        }
+
+        /* only step COLORS */
+        .content-colors {
+            margin-bottom:15px;
+            padding-left: 0;
+        }
+
+        .content-color {
+            float: none !important;
+        }
+
+        ul.color-sections {
+            padding: 5px 0 5px 0;
+            list-style-type: none;
+        }
+
+        ul.color-sections li {
+            padding: 5px 5px 5px 15px;
+            text-transform: uppercase;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        div.color-section {
+            display: none;
+        }
+
+        .mini-color span.mini-text {
+            text-transform: uppercase;
+            font-size: 12px;
+            line-height: 22px;
+            filter: brightness(50%);
+            margin-left: 5px;
+        }
+
+        .minicolors-theme-default {
+            width: 22px !important;
+            height: 22px !important;
+            border: 1px solid #303030;
+            border-radius: 2px;
+        }
+
+        .minicolors input[type=hidden] + .minicolors-swatch {
+            width: 20px !important;
+            position: relative;
+        }
+
+        .minicolors-swatch {
+            border: 0;
+        }
+
+        .minicolors-theme-default .minicolors-swatch {
+            top: -1px;
+            left: 0px;
+            width: 20px !important;
+            height: 20px !important;
+        }
+
+        .minicolors-current-value {
+            font-family: monospace;
+            font-size: 12px;
+            color: #303030;
+        }
+
+        .minicolors-current-value input {
+            text-align: center;
+        }
+
+    </style>
+
+</div>

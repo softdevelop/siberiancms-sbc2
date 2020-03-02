@@ -1,0 +1,11 @@
+{
+  "name": "Analytics",
+  "description": "",
+  "version": "4.17.0",
+  "dependencies": {
+    "system": {
+      "type": "SAE",
+      "version": "4.2.0"
+    }
+  }
+}

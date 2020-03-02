@@ -1,0 +1,17 @@
+{
+  "name": "Job",
+  "description": "Job publication manager.",
+  "version": "4.16.11",
+  "type": "module",
+  "restore_apps": true,
+  "dependencies": {
+    "system": {
+      "type": "SAE",
+      "version": "4.18.0"
+    }
+  },
+  "assets": {
+    "path": "resources/var/apps/modules/job",
+    "folder": "job"
+  }
+}

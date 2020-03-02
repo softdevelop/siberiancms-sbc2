@@ -1,0 +1,114 @@
+<?php
+
+use Weblink\Form\Link as FormLink;
+use Weblink_Model_Weblink_Link as ModelLink;
+
+$optionValue = $this->getOptionValue();
+$application = $this->getApplication();
+$webLink = $optionValue->getObject();
+if (!$webLink->getId()) {
+    $webLink = new Weblink_Model_Type_Mono();
+    $webLink->setValueId($optionValue->getId());
+    $webLink->setTypeId(1);
+    $webLink->save();
+}
+$link = $webLink->getLink();
+if (!$link || !$link->getId()) {
+    $link = new ModelLink();
+}
+
+$form = new FormLink();
+$data = $link->getData();
+
+// Transforming options before populate
+$_options = $link->getOptions();
+$options = [
+    'android' => [],
+    'ios' => [],
+];
+foreach ($_options['android'] as $key => $value) {
+    $options['android']["android_{$key}"] = ($value === 'yes');
+}
+foreach ($_options['ios'] as $key => $value) {
+    $options['ios']["ios_{$key}"] = ($value === 'yes');
+}
+$data['options'] = $options;
+$data['title'] = '-';
+
+$form->removeElement('title');
+$form->removeElement('cover');
+$form->removeElement('cover_button');
+$form->addSimpleHidden('title');
+
+$form->populate($data);
+$form->setValueId($optionValue->getId());
+
+?>
+<div class="form_content">
+    <div id="link"
+         class="edit_page weblink">
+
+        <div class="alert alert-warning">
+            <?php echo p__(
+                'weblink',
+                'Please note that some URIS & websites may not be able to load inside the editor app preview due to iframe restrictions, but they will load inside native Android & iOS apps.') ?>
+        </div>
+
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs"
+            role="tablist">
+            <li role="presentation"
+                class="active">
+                <a href="#link"
+                   aria-controls="link"
+                   role="tab"
+                   data-toggle="tab">
+                    <i class="fa fa-map-marker"></i>
+                    <?php echo p__('weblink', 'Shopify') ?>
+                </a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <!-- START LINK TAB -->
+            <div role="tabpanel"
+                 class="tab-pane active"
+                 id="link">
+                <div class="feature-block-add">
+                    <h3 class="title-editor no-border-radius title-feature-indent">
+                        <?php echo p__('weblink','Enter your shopify URL') ?>
+                    </h3>
+                    <div class="container-fluid subcontent content-feature">
+                        <?php echo $form; ?>
+                    </div>
+                </div>
+            </div>
+            <!-- /END LINK TAB -->
+        </div>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        bindForms('#link');
+
+        // External browser
+        let toggleExternal = function () {
+            let el = $("#external_browser");
+            if (el.is(':checked')) {
+                $("#android_options-element").hide();
+                $("#ios_options-element").hide();
+            } else {
+                $("#android_options-element").show();
+                $("#ios_options-element").show();
+            }
+        };
+
+        $(document).off("change", "#external_browser");
+        $(document).on("change", "#external_browser", function () {
+            toggleExternal();
+        });
+        toggleExternal();
+    });
+</script>

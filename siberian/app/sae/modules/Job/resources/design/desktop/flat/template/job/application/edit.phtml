@@ -1,0 +1,251 @@
+<?php
+
+global $layout;
+$layout = $this->getLayout();
+
+function getSection($name, $data = [])
+{
+    global $layout;
+    $html = $layout
+        ->addPartial('view_general', 'core_view_default', "job/application/tab/{$name}.phtml")
+        ->setData($data)
+        ->toHtml();
+
+    return $html;
+}
+
+
+$application = $this->getApplication();
+$optionValue = $this->getOptionValue();
+
+# Job option
+$job = new Job_Model_Job();
+$job->find($optionValue->getId(), 'value_id');
+
+
+# Companies
+$company = new Job_Model_Company();
+$companies = $company->findAll([
+    'job_id' => $job->getId(),
+]);
+
+$formCompany = new Job_Form_Company([], $application->getId());
+$formCompany->getElement("job_id")->setValue($job->getId());
+$formCompany->setValueId($optionValue->getId());
+$formCompany->addNav("job-company-save-nav", "OK", false);
+
+$companyOptions = [];
+foreach($companies as $_company) {
+    $companyOptions[$_company->getId()] = $_company->getName()." - ".$_company->getLocation();
+}
+
+# Toggle company
+$formCompanyToggle = new Job_Form_Company_Toggle();
+$formCompanyToggle->setValueId($optionValue->getId());
+
+# Place form
+if(!empty(array_keys($companyOptions))) {
+    $place = new Job_Model_Place();
+    $places = $place->findAll([
+        "company_id IN (?)" => array_keys($companyOptions),
+    ]);
+}
+
+$formPlace = new Job_Form_Place();
+if(!empty($companyOptions)) {
+    $formPlace->getElement("company_id")->addMultiOptions($companyOptions);
+}
+$formPlace->setValueId($optionValue->getId());
+$formPlace->addNav("job-place-save-nav", "OK", false);
+$formPlace->getElement('description')->setAttrib('id', 'job-description');
+
+if(!$job->getDisplayIncome()) {
+    $formPlace->removeIncome();
+}
+
+$category = new Job_Model_Category();
+$categories = $category->findAll([
+    "job_id" => $job->getId(),
+]);
+$category_options = ["" => __("None")];
+foreach($categories as $_category) {
+    $category_options[$_category->getId()] = $_category->getName();
+}
+if(!empty($companyOptions)) {
+    $formPlace->getElement("category_id")->addMultiOptions($category_options);
+}
+
+
+# Company & Place delete forms
+$deleteForm = new Job_Form_Company_Delete();
+$deleteForm->setValueId($optionValue->getId());
+$deletePlaceForm = new Job_Form_Place_Delete();
+$deletePlaceForm->setValueId($optionValue->getId());
+
+# Options
+$formOptions = new Job_Form_Options();
+$formOptions->setValueId($optionValue->getId());
+$formOptions->populate($job->getData());
+
+# Toggle job
+$formPlaceToggle = new Job_Form_Place_Toggle();
+$formPlaceToggle->setValueId($optionValue->getId());
+
+# Categories
+$category = new Job_Model_Category();
+$categories = $category->findAll([
+    "job_id" => $job->getId(),
+]);
+
+$formCategory = new Job_Form_Category();
+$formCategory
+    ->setValueId($optionValue->getId())
+    ->getElement("job_id")->setValue($job->getId())
+;
+
+$formCategory->getElement('description')->setAttrib('id', 'category-description');
+
+$formCategory->addNav("job-category-save-nav", "OK", false);
+
+$formCategoryToggle = new Job_Form_Category_Toggle();
+$formCategoryToggle->setValueId($optionValue->getId());
+$deleteCategoryForm = new Job_Form_Category_Delete();
+$deleteCategoryForm->setValueId($optionValue->getId());
+
+?>
+
+
+<div id="list"
+     class="job">
+
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs"
+        role="tablist">
+
+        <?php if ($companies->count() > 0): ?>
+        <li role="presentation"
+            class="active">
+            <a href="#places"
+               aria-controls="places"
+               role="tab"
+               data-toggle="tab">
+                <i class="fa fa-suitcase"></i>
+                <?php echo p__("job", "Jobs") ?>
+            </a>
+        </li>
+        <?php endif; ?>
+
+        <li role="presentation">
+            <a href="#companies"
+               aria-controls="companies"
+               role="tab"
+               data-toggle="tab">
+                <i class="fa fa-building-o"></i>
+                <?php echo p__("job", "Companies") ?>
+            </a>
+        </li>
+
+        <li role="presentation">
+            <a href="#categories"
+               aria-controls="categories"
+               role="tab"
+               data-toggle="tab">
+                <i class="fa fa-tag"></i>
+                <?php echo p__("job", "Categories") ?>
+            </a>
+        </li>
+
+        <li role="presentation">
+            <a href="#design"
+               aria-controls="design"
+               role="tab"
+               data-toggle="tab">
+                <i class="fa fa-tag"></i>
+                <?php echo p__("job", "Design") ?>
+            </a>
+        </li>
+
+        <li role="presentation"
+            class="<?php echo ($companies->count() <= 0) ? "active" : "" ?>">
+            <a href="#settings"
+               aria-controls="settings"
+               role="tab"
+               data-toggle="tab">
+                <i class="fa fa-sliders"></i>
+                <?php echo p__("job", "Settings") ?>
+            </a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+
+        <!-- START COMPANY TAB -->
+        <?php echo getSection("company", [
+            "option_value" => $optionValue,
+            "form_company" => $formCompany,
+            "form_company_toggle" => $formCompanyToggle,
+            "delete_form" => $deleteForm,
+            "companies" => $companies,
+        ]); ?>
+        <!-- /END COMPANY TAB -->
+
+        <!-- START PLACE TAB -->
+        <?php if (isset($places)): ?>
+        <?php echo getSection("place", [
+            "option_value" => $optionValue,
+            "form_place" => $formPlace,
+            "form_place_toggle" => $formPlaceToggle,
+            "delete_form" => $deletePlaceForm,
+            "companies" => $companies,
+            "places" => $places,
+            "company_options" => $companyOptions,
+        ]); ?>
+        <?php endif; ?>
+        <!-- /END PLACE TAB -->
+
+        <!-- START CATEGORY TAB -->
+        <?php echo getSection("category", [
+            "option_value" => $optionValue,
+            "form_category" => $formCategory,
+            "form_category_toggle" => $formCategoryToggle,
+            "delete_category_form" => $deleteCategoryForm,
+            "categories" => $categories,
+        ]); ?>
+        <!-- /END CATEGORY TAB -->
+
+        <!-- START DESIGN TAB -->
+        <div role="tabpanel"
+             class="tab-pane"
+             id="design">
+            <?php echo $this->importBackground($optionValue, false, false); ?>
+        </div>
+        <!-- /END DESIGN TAB -->
+
+        <!-- START SETTINGS TAB -->
+        <div role="tabpanel"
+             class="tab-pane <?php echo ($companies->count() <= 0) ? "active" : "" ?>"
+             id="settings">
+            <div>
+                <h3 class="title-editor no-border-radius title-feature-indent">
+                    <?php echo p__("job", "Settings"); ?>
+                </h3>
+                <div class="container-fluid subcontent content-feature">
+                    <?php echo $formOptions; ?>
+                </div>
+            </div>
+        </div>
+        <!-- /END SETTINGS TAB -->
+
+
+    </div>
+</div>
+
+<link href="/app/sae/modules/Job/resources/design/desktop/flat/template/job/application/edit.css"
+      media="screen"
+      rel="stylesheet"
+      type="text/css" />
+<script type="text/javascript">
+    search_placeholder = '<?php echo __js("Search ...", "'") ?>';
+</script>
+<script type="text/javascript"
+        src="/app/sae/modules/Job/resources/design/desktop/flat/template/job/application/edit.js"></script>

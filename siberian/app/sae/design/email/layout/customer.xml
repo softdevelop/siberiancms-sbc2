@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout>
+
+    <forgot_password>
+        <addLayout name="application_base_layout" />
+        <views>
+            <content_email class="core_view_email_default" template="customer/account/forgotpassword.phtml" />
+        </views>
+    </forgot_password>
+
+    <create_account>
+        <addLayout name="application_base_layout" />
+        <views>
+            <content_email class="core_view_email_default" template="customer/account/create.phtml" />
+        </views>
+    </create_account>
+
+    <gdpr_token>
+        <addLayout name="application_base_layout" />
+        <views>
+            <content_email class="core_view_email_default" template="customer/gdpr/token.phtml" />
+        </views>
+    </gdpr_token>
+
+</layout>

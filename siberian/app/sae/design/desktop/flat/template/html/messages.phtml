@@ -1,0 +1,55 @@
+<?php if ($this->canView()): ?>
+<!-- Ok let's convert old style messages to new sliding info -->
+<script type="text/javascript">
+    $(document).ready(function () {
+        <?php
+            if ($this->hasSuccess()) {
+                foreach($this->getSuccess() as $success) {
+                    $msg = trim($success);
+                    if (empty($msg)) {
+                        continue;
+                    }
+                    ?>
+                    toastr.success('<?php echo __jss($success) ?>', null, {
+                        timeOut: 3700,
+                        extendedTimeOut: 10000,
+                        progressBar: true
+                    });
+                    <?php
+                }
+            }
+            if ($this->hasWarning()) {
+                foreach($this->getWarning() as $warning) {
+                    $msg = trim($warning);
+                    if (empty($msg)) {
+                        continue;
+                    }
+                    ?>
+                    toastr.warning('<?php echo __jss($warning) ?>', null, {
+                        timeOut: 3700,
+                        extendedTimeOut: 10000,
+                        progressBar: true
+                    });
+                    <?php
+                }
+            }
+            if ($this->hasError()) {
+                foreach($this->getError() as $error) {
+                    $msg = trim($error);
+                    if (empty($msg)) {
+                        continue;
+                    }
+                    ?>
+                    toastr.error('<?php echo __jss($error) ?>', null, {
+                        timeOut: 3700,
+                        extendedTimeOut: 10000,
+                        progressBar: true,
+                        positionClass: "toast-top-center"
+                    });
+                    <?php
+                }
+            }
+        ?>
+    });
+</script>
+<?php endif ?>

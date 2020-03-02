@@ -1,0 +1,11 @@
+{
+  "name": "Padlock",
+  "description": "",
+  "version": "4.17.6",
+  "dependencies": {
+    "system": {
+      "type": "SAE",
+      "version": "4.2.0"
+    }
+  }
+}

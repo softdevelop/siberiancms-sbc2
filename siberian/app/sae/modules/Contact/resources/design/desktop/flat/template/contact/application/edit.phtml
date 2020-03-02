@@ -1,0 +1,102 @@
+<?php
+$optionValue = $this->getOptionValue();
+$application = $this->getApplication();
+$contact = new Contact_Model_Contact();
+$contact->find($optionValue->getId(), "value_id");
+
+$formContact = new Contact_Form_Contact();
+$formDesign = new Contact_Form_Design();
+
+if ($contact->getId()) {
+    $data = $contact->getData();
+    if ($contact->getVersion() == "1") {
+        $data["address"] = sprintf("%s\n%s\n%s", $data["street"], $data["postcode"], $data["city"]);
+    }
+
+    $formContact->populate($data);
+    $formDesign->populate($data);
+}
+$formContact->setValueId($optionValue->getId());
+$formDesign->setValueId($optionValue->getId());
+
+$appKey = $application->getGooglemapsKey();
+
+?>
+<div class="form_content">
+    <div id="list"
+         class="contact">
+
+        <?php if (empty($appKey)): ?>
+            <div class="alert alert-warning">
+                <?php echo p__("contact", "It is recommended to set a Google Maps API key to validate contact address.",
+                    "<a href=\"/application/settings_apis\"><b>" . __("Settings") . " > " . __("API") . "</b></a>") ?>
+            </div>
+        <?php endif; ?>
+
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs"
+            role="tablist">
+            <li role="presentation"
+                class="active">
+                <a href="#contact"
+                   aria-controls="contact"
+                   role="tab"
+                   data-toggle="tab">
+                    <i class="fa fa-folder-open-o"></i>
+                    <?php echo p__("contact","Contact") ?>
+                </a>
+            </li>
+            <li role="presentation">
+                <a href="#design"
+                   aria-controls="design"
+                   role="tab"
+                   data-toggle="tab">
+                    <i class="fa fa-pencil"></i>
+                    <?php echo p__("contact","Design") ?>
+                </a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <!-- START FEED TAB -->
+            <div role="tabpanel"
+                 class="tab-pane active"
+                 id="contact">
+
+                <div class="feature-block-add">
+                    <h3 class="title-editor no-border-radius title-feature-indent">
+                        <?php echo p__("contact","Contact information") ?>
+                    </h3>
+                    <div class="container-fluid first-row-feature content-feature">
+                        <?php echo $formContact; ?>
+                    </div>
+                </div>
+
+            </div>
+            <!-- END FEED TAB -->
+
+            <!-- START DESIGN TAB -->
+            <div role="tabpanel"
+                 class="tab-pane"
+                 id="design">
+
+                <div class="feature-block-add">
+                    <h3 class="title-editor no-border-radius title-feature-indent">
+                        <?php echo p__("contact","Settings") ?>
+                    </h3>
+                    <div class="container-fluid first-row-feature content-feature">
+                        <?php echo $formDesign; ?>
+                    </div>
+                </div>
+
+                <?php echo $this->importBackground($optionValue, false); ?>
+            </div>
+            <!-- END DESIGN TAB -->
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        bindForms("#list");
+    });
+</script>

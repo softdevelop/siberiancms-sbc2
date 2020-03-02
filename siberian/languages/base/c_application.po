@@ -1,0 +1,217 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2020-01-09T15:29:57+00:00\n"
+"PO-Revision-Date: 2020-01-09T15:29:57+00:00\n"
+"Language: \n"
+
+# GMT 1578583797.3653
+msgctxt "application"
+msgid "Upload in progress ..."
+msgstr "Upload in progress ..."
+
+# GMT 1578584028.7122
+msgctxt "application"
+msgid "When not published, this feature is not accessible in menu & in-app links."
+msgstr "When not published, this feature is not accessible in menu & in-app links."
+
+# GMT 1578584028.7125
+msgctxt "application"
+msgid "Published"
+msgstr "Published"
+
+# GMT 1578584028.7128
+msgctxt "application"
+msgid "When disabled, this feature will only be accessible via in-app links."
+msgstr "When disabled, this feature will only be accessible via in-app links."
+
+# GMT 1578584028.7131
+msgctxt "application"
+msgid "Available from menu"
+msgstr "Available from menu"
+
+# GMT 1578585705.8167
+msgctxt "application"
+msgid "Here are displayed the features, and so the pages that you have added to your app. You can add content, change the position and remove any page anytime."
+msgstr "Here are displayed the features, and so the pages that you have added to your app. You can add content, change the position and remove any page anytime."
+
+# GMT 1578585705.817
+msgctxt "application"
+msgid "Here is the list of the available features you can add to your app. Some features can be added only once while some other features can be added multiple time."
+msgstr "Here is the list of the available features you can add to your app. Some features can be added only once while some other features can be added multiple time."
+
+# GMT 1578585705.8174
+msgctxt "application"
+msgid "See changes"
+msgstr "See changes"
+
+# GMT 1578566400.7749
+msgctxt "application"
+msgid "Sections"
+msgstr "Sections"
+
+# GMT 1578566400.7752
+msgctxt "application"
+msgid "All"
+msgstr "All"
+
+# GMT 1578566400.7755
+msgctxt "application"
+msgid "Text"
+msgstr "Text"
+
+# GMT 1578566400.7758
+msgctxt "application"
+msgid "Background"
+msgstr "Background"
+
+# GMT 1578566400.7761
+msgctxt "application"
+msgid "Border"
+msgstr "Border"
+
+# GMT 1578566400.7764
+msgctxt "application"
+msgid "Image"
+msgstr "Image"
+
+# GMT 1578566400.7769
+msgctxt "application"
+msgid "App"
+msgstr "App"
+
+# GMT 1578566400.7772
+msgctxt "application"
+msgid "Demo"
+msgstr "Demo"
+
+# GMT 1578567272.5754
+msgctxt "application"
+msgid "New position saved."
+msgstr "New position saved."
+
+# GMT 1580121495.6104
+msgctxt "application"
+msgid "Social sharing"
+msgstr "Social sharing"
+
+# GMT 1580204779.3085
+msgctxt "application"
+msgid "Subscription valid"
+msgstr "Subscription valid"
+
+# GMT 1580204779.3087
+msgctxt "application"
+msgid "MANAGE"
+msgstr "MANAGE"
+
+# GMT 1580204779.3089
+msgctxt "application"
+msgid "TRASH"
+msgstr "TRASH"
+
+# GMT 1580204779.3091
+msgctxt "application"
+msgid "Subscription required"
+msgstr "Subscription required"
+
+# GMT 1580378820.0463
+msgctxt "application"
+msgid "Choose a template (combination of colors, images and features, that you can change anytime) and a layout (the way your menu is designed and displayed)"
+msgstr "Choose a template (combination of colors, images and features, that you can change anytime) and a layout (the way your menu is designed and displayed)"
+
+# GMT 1580378820.0467
+msgctxt "application"
+msgid "Homepage options"
+msgstr "Homepage options"
+
+# GMT 1580378820.0468
+msgctxt "application"
+msgid "Layout options"
+msgstr "Layout options"
+
+# GMT 1580378820.0469
+msgctxt "application"
+msgid "The unified homepage tool helps you choose a homepage image/background that will be compatible will all device screen sizes."
+msgstr "The unified homepage tool helps you choose a homepage image/background that will be compatible will all device screen sizes."
+
+# GMT 1580378820.047
+msgctxt "application"
+msgid "Localization settings"
+msgstr "Localization settings"
+
+# GMT 1580378820.0471
+msgctxt "application"
+msgid "Choose the main country and currency of your app. It will be used for different aspects like the time zone, and the currency symbol."
+msgstr "Choose the main country and currency of your app. It will be used for different aspects like the time zone, and the currency symbol."
+
+# GMT 1580378820.0472
+msgctxt "application"
+msgid "Select a currency"
+msgstr "Select a currency"
+
+# GMT 1580378820.0474
+msgctxt "application"
+msgid "Select a default country"
+msgstr "Select a default country"
+
+# GMT 1580395205.3902
+msgctxt "application"
+msgid "Domain name"
+msgstr "Domain name"
+
+# GMT 1580395205.3906
+msgctxt "application"
+msgid "WebApp link"
+msgstr "WebApp link"
+
+# GMT 1580395239.4918
+msgctxt "application"
+msgid "Choose a pricing plan to get your app published on the stores"
+msgstr "Choose a pricing plan to get your app published on the stores"
+
+# GMT 1580395239.4922
+msgctxt "application"
+msgid "You can change your application name, as well as the bundle ID and the package name. These two last items are your app unique identifiers when being published on the App Store and Google Play, you don't need to edit them except if you know what you do."
+msgstr "You can change your application name, as well as the bundle ID and the package name. These two last items are your app unique identifiers when being published on the App Store and Google Play, you don't need to edit them except if you know what you do."
+
+# GMT 1580395239.4926
+msgctxt "application"
+msgid "Application ID"
+msgstr "Application ID"
+
+# GMT 1580395239.4929
+msgctxt "application"
+msgid "You can monetize your app by adding ad banners or interstitials that will be displayed to your app users."
+msgstr "You can monetize your app by adding ad banners or interstitials that will be displayed to your app users."
+
+# GMT 1580395239.493
+msgctxt "application"
+msgid "The source codes of your app, one version for iOS and one version for Android. Useful if you want to compile your apps manually by yourself through Xcode and Android Studio."
+msgstr "The source codes of your app, one version for iOS and one version for Android. Useful if you want to compile your apps manually by yourself through Xcode and Android Studio."
+
+# GMT 1580398369.5765
+msgctxt "application"
+msgid "Public URL of the privacy policy"
+msgstr "Public URL of the privacy policy"
+
+# GMT 1580398369.5768
+msgctxt "application"
+msgid "You can use <b>%s</b> as variable for your application name."
+msgstr "You can use <b>%s</b> as variable for your application name."
+
+# GMT 1580398369.5769
+msgctxt "application"
+msgid "New push message"
+msgstr "New push message"
+
+# GMT 1580398369.5770
+msgctxt "application"
+msgid "You have a new push message"
+msgstr "You have a new push message"

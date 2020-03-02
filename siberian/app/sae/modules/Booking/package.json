@@ -1,0 +1,11 @@
+{
+  "name": "Booking",
+  "description": "",
+  "version": "4.16.11",
+  "dependencies": {
+    "system": {
+      "type": "SAE",
+      "version": "4.2.0"
+    }
+  }
+}

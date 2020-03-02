@@ -1,0 +1,30 @@
+<?php
+
+use Sourcecode\Form\Sourcecode as FormSourcecode;
+
+$optionValue = $this->getOptionValue();
+$valueId = $optionValue->getId();
+$sourceCode = $optionValue->getObject();
+
+$form = new FormSourcecode();
+$form->setValueId($valueId);
+$form->setHtmlCode($sourceCode->getHtmlCode());
+?>
+
+<div class="source_code">
+    <div>
+        <h3 class="title-editor no-border-radius title-feature-indent">
+            <?php echo __('Source Code'); ?>
+        </h3>
+        <div id="source-code-form"
+             class="container-fluid first-row-feature content-feature">
+            <?php echo $form; ?>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            bindForms('#source-code-form');
+        });
+    </script>
+</div>

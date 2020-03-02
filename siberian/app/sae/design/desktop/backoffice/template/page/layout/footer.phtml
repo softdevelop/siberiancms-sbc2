@@ -1,0 +1,13 @@
+<div class="wrapper footer_content">
+    <div class="content copyright a-right wl_panel">
+        <p>
+            <?php echo $this->_("%s - v%s", \Siberian\Version::TYPE, \Siberian\Version::VERSION); ?>
+            <?php if(APPLICATION_ENV !== "production"): ?>
+                - <?php echo ucfirst(__(APPLICATION_ENV)); ?>
+            <?php endif; ?>
+        </p>
+
+    </div>
+</div>
+
+<?php echo Siberian_Debug::render(); ?>

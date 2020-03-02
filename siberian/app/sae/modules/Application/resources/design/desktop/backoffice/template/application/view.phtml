@@ -1,0 +1,84 @@
+<?php
+global $layout;
+$layout = $this->getLayout();
+
+function getSection ($name, $clear = false) {
+    global $layout;
+    $html = $layout
+        ->addPartial("view_general", "core_view_default", "application/view/{$name}.phtml")
+        ->toHtml();
+
+    if ($clear === true) {
+        $html .= "<div class=\"clear\"></div>";
+    }
+
+    return $html;
+}
+?>
+
+<?php
+
+echo getSection("general", true);
+echo getSection("device", true);
+echo getSection("store", true);
+echo getSection("advertising", true);
+echo getSection("banner", true);
+
+?>
+
+<?php
+if (!\Siberian\Version::is("sae")) {
+    echo getSection("user", true);
+}
+?>
+
+<?php
+echo getSection("developer", true);
+echo getSection("media", true);
+?>
+
+<!-- Hides the source/apk/ios sections when the app is not upgraded to splash version 2 -->
+<div ng-if="tmp_application.background_image_unified !== null && tmp_application.startup_image_unified !== null">
+    <?php
+
+    echo getSection("source");
+    echo getSection("apk-service");
+    echo getSection("ios-autopublish");
+
+    ?>
+</div>
+
+<div ng-if="tmp_application.background_image_unified === null || tmp_application.startup_image_unified === null">
+    <sb-section title="'<?php echo addslashes(__("Upgrade required for Sources APK / IPA")); ?>'">
+        <div class="col-md-12">
+            <div class="alert alert-danger">
+                <?php echo __("This application was not upgraded to the unified splashscreens & can't be published right now.") ?>
+            </div>
+        </div>
+
+        <div class="clear"></div>
+    </sb-section>
+</div>
+
+<?php
+
+echo getSection("certificate", true);
+echo getSection("access");
+
+?>
+
+<style type="text/css">
+    .btn-sm {
+        padding: 1px 5px !important;
+        font-size: 11px !important;
+        line-height: 1.4 !important;
+        font-weight: bold;
+        border: 0 !important;
+    }
+
+    a.btn-sm,
+    a.btn-sm:hover {
+        text-decoration: none !important;
+    }
+</style>
+

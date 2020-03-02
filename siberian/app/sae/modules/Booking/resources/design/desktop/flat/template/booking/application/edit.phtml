@@ -1,0 +1,203 @@
+<?php
+
+use Siberian\Json;
+
+$application = $this->getApplication();
+$optionValue = $this->getOptionValue();
+$valueId = $optionValue->getId();
+$booking = (new Booking_Model_Booking())->find($optionValue->getId(), "value_id");
+
+if (!$booking->getId()) {
+    $booking->setValueId($optionValue->getId());
+    $booking->save();
+    $booking->find($booking->getId());
+}
+
+$store = new Booking_Model_Store();
+$stores = $store->findAll(["booking_id" => $booking->getId()]);
+
+// Settings!
+$formSettings = new Booking_Form_Settings();
+
+try {
+    $settings = Json::decode($optionValue->getSettings());
+    $settings = array_merge($settings, $booking->getData());
+
+    $formSettings->populate($settings);
+} catch (\Exception $e) {
+    // Nope!
+}
+
+$formSettings->setValueId($valueId);
+
+// Location!
+$formLocation = new Booking_Form_Location();
+$formLocation->getElement("booking_id")->setValue($booking->getId());
+$formLocation->setValueId($valueId);
+
+// Delete location
+$deleteLocationForm = new Booking_Form_Location_Delete();
+$deleteLocationForm->setValueId($valueId);
+
+?>
+<div id="list"
+     class="booking">
+
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs"
+        role="tablist">
+        <li role="presentation"
+            class="active">
+            <a href="#location"
+               aria-controls="location"
+               role="tab"
+               data-toggle="tab">
+                <i class="fa fa-home"></i>
+                <?php echo p__("booking","Locations") ?>
+            </a>
+        </li>
+        <li role="presentation">
+            <a href="#settings"
+               aria-controls="settings"
+               role="tab"
+               data-toggle="tab">
+                <i class="fa fa-gears"></i>
+                <?php echo p__("booking","Settings") ?>
+            </a>
+        </li>
+        <li role="presentation">
+            <a href="#tab-design"
+               aria-controls="tab-design"
+               role="tab"
+               data-toggle="tab">
+                <i class="fa fa-pencil"></i>
+                <?php echo p__("booking","Design") ?>
+            </a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <!-- START LOCATION TAB -->
+        <div role="tabpanel"
+             class="tab-pane active"
+             id="location">
+
+            <div class="feature-block-add">
+                <h3 class="title-editor no-border-radius title-feature-indent">
+                    <?php echo p__("booking", "Create a new location"); ?>
+                    <button type="button"
+                            class="feature-toggle-add toggle_design color-blue pull-right bt-header-right btn">
+                        <i class="fa fa-plus"></i>
+                    </button>
+                </h3>
+            </div>
+
+            <div class="feature-block-create">
+                <h3 class="title-editor no-border-radius title-feature-indent">
+                    <?php echo p__("booking", "Create a new location"); ?>
+                </h3>
+                <div class="container-fluid subcontent content-feature">
+                    <?php echo $formLocation; ?>
+                </div>
+            </div>
+
+            <?php echo $this->createPartialHtml("no_item", "core_view_default", "application/customization/features/edit/no_item.phtml"); ?>
+
+            <?php if (isset($stores) && $stores->count() > 0): ?>
+                <div class="feature-block-list">
+                    <div class="margin-top">
+                        <h3 class="title-editor no-border-radius title-feature-indent">
+                            <?php echo p__("booking", "Manage locations"); ?>
+                            <button type="button"
+                                    class="toggle_design color-blue pull-right bt-header-right btn feature-toggle-items">
+                                <i class="fa fa-angle-down"></i>
+                            </button>
+                        </h3>
+                        <div class="container-fluid first-row-feature content-feature feature-manage-items">
+                            <table class="table content-white-bkg sb-pager">
+                                <thead>
+                                <tr class="border-grey">
+                                    <th class="sortable"
+                                        style="width:45%;"><?php echo p__("booking", "Location name"); ?></th>
+                                    <th class="sortable"
+                                        style="width:45%;"><?php echo p__("booking", "E-mail"); ?></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach($stores as $location) : ?>
+                                    <tr id="location_manage_element_<?php echo $location->getId(); ?>"
+                                        class="location-manage-element sb-pager">
+                                        <td><?php echo $location->getStoreName(); ?></td>
+                                        <td><?php echo $location->getEmail(); ?></td>
+                                        <td class="edit-action open-edit"
+                                            data-id="location_<?php echo $location->getId(); ?>"
+                                            data-form-url="<?php echo __path("/booking/application/load-form", ["store_id" => $location->getId(), "value_id" => $optionValue->getId()]); ?>">
+                                            <i class="fa fa-pencil"></i>
+                                        </td>
+                                        <td class="delete-action">
+                                            <?php
+                                            $deleteLocationForm->setAttrib("data-rowid", "location_manage_element_".$location->getId());
+                                            $deleteLocationForm->getElement("store_id")->setValue($location->getId());
+
+                                            echo $deleteLocationForm;
+                                            ?>
+                                        </td>
+                                    </tr>
+                                    <tr class="edit-form"
+                                        data-id="location_<?php echo $location->getId(); ?>"
+                                        style="display: none;">
+                                        <td colspan="6">
+                                            <p class="close-edit"
+                                               data-id="place_<?php echo $location->getId(); ?>">
+                                                <i class="fa fa-times"></i><?php echo p__("booking", "Close") ?>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+        </div>
+        <!-- END LOCATION TAB -->
+
+        <!-- START SETTINGS TAB -->
+        <div role="tabpanel"
+             class="tab-pane"
+             id="settings">
+
+            <div class="cont_add_section form-horizontal">
+                <h3 class="title-editor no-border-radius title-feature-indent">
+                    <?php echo p__("booking", "Settings"); ?>
+                </h3>
+                <div class="container-fluid content-feature">
+                    <br />
+                    <?php echo $formSettings; ?>
+                </div>
+                <br />
+            </div>
+        </div>
+        <!-- END SETTINGS TAB -->
+
+        <!-- START DESIGN TAB -->
+        <div role="tabpanel"
+             class="tab-pane"
+             id="tab-design">
+
+            <?php echo $this->importBackground($optionValue, false, false); ?>
+        </div>
+        <!-- END DESIGN TAB -->
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        bindForms("#list");
+    });
+</script>

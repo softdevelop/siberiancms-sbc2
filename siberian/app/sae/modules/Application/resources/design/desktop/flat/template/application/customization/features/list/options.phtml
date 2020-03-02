@@ -1,0 +1,81 @@
+<?php
+/**
+ * @var $application Application_Model_Application
+ */
+$application = $this->getApplication();
+$optionValues = $application->getOptions();
+?>
+
+<div>
+    <div id="carousel-container">
+        <ul id="option_values"
+            class="pages_list carousel-ul font-blue"
+            data-max-icons="<?php $l = $this->getApplication()->getLayout(); echo $l->getUseMoreButton() ? $l->getNumberOfDisplayedIcons() : ""; ?>">
+            <?php
+            foreach ($optionValues as $key => $optionValue) {
+                echo $this
+                    ->getLayout()
+                    ->addPartial(
+                        'row_' . $optionValue->getId(),
+                        'application_view_customization_features_list_options',
+                        'application/customization/features/list/options/li.phtml')
+                    ->setOptionValue($optionValue)
+                    ->setIsSortable(1)
+                    ->toHtml();
+            }
+            ?>
+
+            <?php
+            if ($application->getLayout()->getUseMoreButton()) {
+                $moreOption = (new Application_Model_Option_Value())->find('more_items');
+                echo $this->getLayout()
+                    ->addPartial(
+                        'row_' . $moreOption->getId(),
+                        'application_view_customization_features_list_options',
+                        'application/customization/features/list/options/li.phtml')
+                    ->setOptionValue($moreOption)
+                    ->setIsSortable(0)
+                    ->setIsHidden(1)
+                    ->toHtml();
+            }
+            ?>
+        </ul>
+    </div>
+    <a id="carousel_prev">
+        <i class="fa fa-angle-left"></i>
+    </a>
+    <a id="carousel_next">
+        <i class="fa fa-angle-right"></i>
+    </a>
+</div>
+<style>
+    #carousel_prev, #carousel_next {
+        position: absolute;
+        top: 50px;
+        width: 16px;
+        height: 92px;
+        padding: 36px 0 0;
+        cursor: pointer;
+        z-index: 2;
+        font-size: 35px;
+    }
+
+    #carousel_prev {
+        left: 25px;
+    }
+
+    #carousel_next {
+        right: 25px;
+    }
+
+    #carousel-container {
+        height: 106px;
+        overflow: hidden;
+        margin-left: 55px;
+    }
+
+    .carousel-ul {
+        height: 102px;
+        padding: 0
+    }
+</style>

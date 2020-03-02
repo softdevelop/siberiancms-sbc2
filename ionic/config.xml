@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.appsmobilecompany.base" version="1.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>AppsMobileCompany</name>
+    <description>Apps Mobile Company app source code</description>
+    <author>Apps Mobile Company Dev Team</author>
+    <content src="index.html" />
+    <access origin="*" />
+    <access origin="cdvfile://*" />
+
+    <access launch-external="yes"
+            origin="tel:*" />
+    <access launch-external="yes"
+            origin="geo:*" />
+    <access launch-external="yes"
+            origin="mailto:*" />
+    <access launch-external="yes"
+            origin="sms:*" />
+    <access launch-external="yes"
+            origin="waze:*" />
+    <access launch-external="yes"
+            origin="google.navigation:*" />
+    <access launch-external="yes"
+            origin="whatsapp:*"  />
+
+    <allow-navigation href="*" />
+
+    <allow-intent href="tel:*" />
+    <allow-intent href="geo:*" />
+    <allow-intent href="mailto:*" />
+    <allow-intent href="sms:*" />
+    <allow-intent href="waze:*" />
+    <allow-intent href="google.navigation:*" />
+    <allow-intent href="whatsapp:*" />
+
+    <preference name="webviewbounce"
+                value="false" />
+    <preference name="UIWebViewBounce"
+                value="false" />
+    <preference name="DisallowOverscroll"
+                value="true" />
+    <preference name="BackupWebStorage"
+                value="none" />
+    <preference name="SplashShowOnlyFirstTime"
+                value="false" />
+    <preference name="AutoHideSplashScreen"
+                value="false" />
+    <preference name="FadeSplashScreen"
+                value="true" />
+    <preference name="FadeSplashScreenDuration"
+                value="200" />
+    <preference name="SplashMaintainAspectRatio"
+                value="true" />
+
+    <preference name="android-minSdkVersion"
+                value="19" />
+    <preference name="android-targetSdkVersion"
+                value="28" />
+
+    <feature name="StatusBar">
+        <param name="ios-package"
+               onload="true"
+               value="CDVStatusBar" />
+    </feature>
+
+    <chcp>
+        <config-file url="PLATFORM_URL" />
+        <native-interface version="13" />
+        <auto-download enabled="false" />
+        <auto-install enabled="false" />
+    </chcp>
+
+    <platform name="android">
+        <icon density="xxxhdpi"
+              src="resources/android/icon/drawable-xxxhdpi-icon.png" />
+
+        <splash density="xxxhdpi"
+                src="resources/android/splash/drawable-xxxhdpi-screen.jpg" />
+
+        <resource-file src="resources/google-services.json"
+                       target="app/google-services.json" />
+
+        <preference name="applicationId" value="${applicationId}" />
+    </platform>
+
+    <platform name="ios">
+        <preference name="HideKeyboardFormAccessoryBar" value="false" />
+        <preference name="KeyboardResize" value="true" />
+        <preference name="KeyboardResizeMode" value="native" />
+        <preference name="deployment-target" value="10.0" />
+        <preference name="WKWebViewOnly" value="true" />
+    </platform>
+
+    <engine name="ios" />
+</widget>

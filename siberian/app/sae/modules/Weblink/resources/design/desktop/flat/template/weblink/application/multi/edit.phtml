@@ -1,0 +1,284 @@
+<?php
+
+use Weblink\Form\Link as FormLink;
+use Weblink\Form\Delete\Link as FormDeleteLink;
+use Weblink_Model_Weblink_Link as ModelLink;
+
+$optionValue = $this->getOptionValue();
+$application = $this->getApplication();
+$webLink = $optionValue->getObject();
+if (!$webLink->getId()) {
+    $webLink = new Weblink_Model_Type_Multi();
+    $webLink->setValueId($optionValue->getId());
+    $webLink->setTypeId(2);
+    $webLink->save();
+}
+
+$settingsForm = new Weblink_Form_Settings();
+$settings = [];
+try {
+    $settings = \Siberian_Json::decode($optionValue->getSettings());
+} catch (\Exception $e) {
+    //
+    $settings = [];
+}
+$settings['cover'] = $webLink->getCover();
+
+$settingsForm->populate($settings);
+$settingsForm->setValueId($optionValue->getId());
+
+$deleteForm = new FormDeleteLink();
+$deleteForm->setValueId($optionValue->getId());
+
+$formLink = new FormLink();
+$formLink->setValueId($optionValue->getId());
+
+$links = (new ModelLink)->findAll(
+        [
+                'weblink_id = ?' => $webLink->getId()
+        ],
+        ['position ASC']
+);
+
+?>
+<div class="form_content">
+    <div id="list"
+         class="edit_page weblink">
+
+        <div class="alert alert-warning">
+            <?php echo p__(
+                    'weblink',
+                'Please note that some URIS & websites may not be able to load inside the editor app preview due to iframe restrictions, but they will load inside native Android & iOS apps.') ?>
+        </div>
+
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs"
+            role="tablist">
+            <li role="presentation"
+                class="active">
+                <a href="#links"
+                   aria-controls="links"
+                   role="tab"
+                   data-toggle="tab">
+                    <i class="fa fa-map-marker"></i>
+                    <?php echo p__('weblink', 'Links') ?>
+                </a>
+            </li>
+            <li role="presentation">
+                <a href="#settings"
+                   aria-controls="settings"
+                   role="tab"
+                   data-toggle="tab">
+                    <i class="fa fa-cogs"></i>
+                    <?php echo p__('weblink', 'Settings') ?>
+                </a>
+            </li>
+            <li role="presentation">
+                <a href="#design"
+                   aria-controls="design"
+                   role="tab"
+                   data-toggle="tab">
+                    <i class="fa fa-image"></i>
+                    <?php echo p__('weblink', 'Design') ?>
+                </a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+
+            <!-- START LINKS TAB -->
+            <div role="tabpanel"
+                 class="tab-pane active"
+                 id="links">
+                <div class="feature-block-add">
+                    <h3 class="title-editor no-border-radius title-feature-indent">
+                        <?php echo p__('weblink','Add a link') ?>
+                        <button type="button" class="feature-toggle-add toggle_design color-blue pull-right bt-header-right btn">
+                            <i class="fa fa-plus"></i>
+                        </button>
+                    </h3>
+                    <div class="container-fluid subcontent content-feature">
+                        <?php echo $formLink; ?>
+                    </div>
+                </div>
+
+                <?php if ($links->count() > 0): ?>
+                    <div class="feature-block-list">
+                        <div class="margin-top">
+                            <h3 class="title-editor no-border-radius title-feature-indent">
+                                <?php echo p__('weblink', 'Manage links'); ?>
+                                <button type="button" class="toggle_design color-blue pull-right bt-header-right btn feature-toggle-items">
+                                    <i class="fa fa-angle-down"></i>
+                                </button>
+                            </h3>
+                            <div class="container-fluid first-row-feature content-feature feature-manage-items">
+                                <table class="table content-white-bkg sb-pager">
+                                    <thead>
+                                        <tr class="border-grey">
+                                            <th style="width:32px;"></th>
+                                            <th style="width:32px;"></th>
+                                            <th class="sortable"
+                                                style="width:35%;"><?php echo p__('weblink','Title'); ?></th>
+                                            <th class="sortable"
+                                                style="width: 35%;"><?php echo p__('weblink','URL'); ?></th>
+                                            <th style="width:10%;"><?php echo p__('weblink','Position') ?></th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="links-sortable">
+                                    <?php foreach($links as $link) : ?>
+                                        <tr id="link_manage_element_<?php echo $link->getId(); ?>"
+                                            rel="<?php echo $link->getId(); ?>"
+                                            class="link-manage-element sb-pager link-container">
+                                            <td class="link-handle"
+                                                style="text-align: center;">
+                                                <i class="fa fa-sort"></i>
+                                            </td>
+                                            <td>
+                                                <?php if (!empty($link->getPicto())): ?>
+                                                <img src="<?php echo '/images/application' . $link->getPicto() ?>" style="width: 22px; height: 22px; border-radius: 11px;" />
+                                                <?php endif; ?>
+                                            </td>
+                                            <td><?php echo $link->getTitle(); ?></td>
+                                            <td style="word-break: break-word;"><?php echo $link->getData('url'); ?></td>
+                                            <td class="link-position"><?php echo $link->getPosition() ?></td>
+                                            <td class="edit-action open-edit"
+                                                data-id="link_<?php echo $link->getId(); ?>"
+                                                data-form-url="<?php echo __path('/weblink/application/load-form', [
+                                                    'link_id' => $link->getId(),
+                                                    'value_id' => $optionValue->getId()
+                                                ]); ?>">
+                                                <i class="fa fa-pencil"></i>
+                                            </td>
+                                            <td class="delete-action">
+                                                <?php
+                                                $deleteForm->setAttrib('data-rowid', "link_manage_element_{$link->getId()}");
+                                                $deleteForm->getElement('link_id')->setValue($link->getId());
+
+                                                echo $deleteForm;
+                                                ?>
+                                            </td>
+                                        </tr>
+                                        <tr class="edit-form"
+                                            data-id="link_<?php echo $link->getId(); ?>"
+                                            style="display: none;">
+                                            <td colspan="7">
+                                                <p class="close-edit"
+                                                   data-id="link_<?php echo $link->getId(); ?>">
+                                                    <i class="fa fa-times"></i><?php echo p__('weblink', 'Close') ?>
+                                                </p>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </div>
+            <!-- /END LINKS TAB -->
+
+            <!-- START SETTINGS TAB -->
+            <div role="tabpanel"
+                 class="tab-pane"
+                 id="settings">
+                <div>
+                    <h3 class="title-editor title-feature-indent">
+                        <?php echo p__('weblink', 'Settings & options'); ?>
+                    </h3>
+                </div>
+                <div class="container-fluid subcontent content-feature">
+                    <?php echo $settingsForm; ?>
+                </div>
+            </div>
+            <!-- /END SETTINGS TAB -->
+
+            <!-- START DESIGN TAB -->
+            <div role="tabpanel"
+                 class="tab-pane"
+                 id="design">
+                <?php echo $this->importBackground($optionValue, false, false); ?>
+            </div>
+            <!-- /END DESIGN TAB -->
+
+        </div>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var reloadOverviewLinks = function () {
+            try {
+                iframe.f.overview['weblink_multi']();
+            } catch(e) {
+                //
+            }
+        };
+
+        bindForms('#links');
+        bindForms('#design', 'color-blue', reloadOverviewLinks);
+        bindForms('#settings', 'color-blue', reloadOverviewLinks);
+
+        // Sections
+        $('.links-sortable').sortable({
+            handle: ".link-handle",
+            axis: "y",
+            items: " .link-container",
+            opacity: 0.7,
+            start: function() {
+                // Clear all forms inside elements!
+                $("#links .close-edit").trigger("click");
+            },
+            stop: function() {
+                let sections = $('.links-sortable tr[rel]');
+                let data = {
+                    indexes: []
+                };
+                let index = 1;
+                sections.each(function() {
+                    let el = $(this);
+                    data.indexes.push(el.attr('rel'));
+
+                    el.find('.link-position').text(index++);
+                });
+
+                data.value_id = '<?php echo $optionValue->getId() ?>';
+
+                formget(
+                    '/weblink/application/update-positions',
+                    data,
+                    function(result) {
+                        reloadOverviewLinks();
+                    },
+                    function(result) {}
+                );
+            }
+        });
+
+        // External browser
+        let toggleExternal = function () {
+            let el = $("#external_browser");
+            if (el.is(':checked')) {
+                $("#android_options-element").hide();
+                $("#ios_options-element").hide();
+            } else {
+                $("#android_options-element").show();
+                $("#ios_options-element").show();
+            }
+        };
+
+        $(document).off("change", "#external_browser");
+        $(document).on("change", "#external_browser", function () {
+            toggleExternal();
+        });
+        toggleExternal();
+
+        setTimeout(function () {
+            reloadOverviewLinks();
+        }, 1000);
+    });
+</script>

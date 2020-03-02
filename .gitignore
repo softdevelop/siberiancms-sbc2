@@ -1,0 +1,35 @@
+# Editor & Defaults generics files
+*.un~
+*.swp
+*.swo
+*.swn
+*.projectile
+*.ac-php-conf.json
+.DS_Store
+.idea
+/tmp
+/nbproject
+*.sublime-*
+build/
+__*
+.sass-cache
+.gradle
+package-lock.json
+
+# Development files
+/developer.json
+/release-*
+/.trash
+/.dev
+/apache.default
+/nginx.default
+npm-debug.log
+/node_modules/
+/ionic/platforms/Archive.zip
+/templates
+
+**/data/dummy_*.xml
+
+# Locally built packages
+/packages/*
+

@@ -1,0 +1,11 @@
+{
+  "name": "System",
+  "description": "",
+  "version": "4.17.9",
+  "dependencies": {
+    "system": {
+      "type": "SAE",
+      "version": "4.8.11"
+    }
+  }
+}
